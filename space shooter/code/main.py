@@ -1,6 +1,7 @@
 from os.path import join
 from random import randint
 import pygame
+from pygame.mixer_music import play
 
 #general setup
 pygame.init()
@@ -13,7 +14,8 @@ clock = pygame.time.Clock()
 #player stuff
 player_surf = pygame.image.load(join('images', 'player.png')).convert_alpha()
 player_rect = player_surf.get_frect(center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
-player_direction = pygame.Vector2(1, 1)
+player_direction = pygame.Vector2(0, 0)
+player_speed = 300
 
 #star stuff
 star_surf = pygame.image.load(join('images', 'star.png')).convert_alpha()
@@ -37,13 +39,25 @@ for i in range(20):
 
 while running:
     #event loop
-    clock.tick(60)
+    dt = clock.tick(60) / 1000
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
     #i'm gonna put game logic here
-    player_rect.center += player_direction
+
+    #this is gonna be where i get input
+    keys = pygame.key.get_pressed()
+    player_direction.x = int(keys[pygame.K_d]) - int(keys[pygame.K_a])
+    player_direction.y = int(keys[pygame.K_s]) - int(keys[pygame.K_w])
+    #normalize speed up and down
+    player_direction = player_direction.normalize() if player_direction else player_direction
+
+    if pygame.key.get_just_pressed()[pygame.K_SPACE]:
+        print("fire laser")
+
+
+    player_rect.center += player_direction * player_speed * dt
 
     #meteor movement logic
     meteor_rect.center += meteor_direction * meteor_speed
@@ -67,4 +81,4 @@ while running:
 
 pygame.quit()
 
-# left off at 1 hr 14 min 59 seconds
+# left off at 1 hr 54 min 28 seconds
