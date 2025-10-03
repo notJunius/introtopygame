@@ -9,16 +9,9 @@
       pkgs = import nixpkgs { inherit system; };
     in {
       devShells.x86_64-linux.default = pkgs.mkShell {
-        buildInputs = with pkgs; [
-          hello
-        ];
         packages = [
           (pkgs.python3.withPackages(p: with p; [
-            pillow
             pygame-ce
-            numpy
-            pandas
-            pytest
           ]))
         ];
         shellHook = ''
