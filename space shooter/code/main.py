@@ -113,12 +113,14 @@ class AnimatedExplosion(pygame.sprite.Sprite):
 def collision():
     global running
     global score
+    global meteors_destroyed
     if pygame.sprite.spritecollide(player, meteor_sprites, False, pygame.sprite.collide_mask):
         player.kill()
         running = False
     for laser in laser_sprites:
         if pygame.sprite.spritecollide(laser, meteor_sprites, True):
             score += 10
+            meteors_destroyed += 1
             laser.kill()
             AnimatedExplosion(explosion_frames, laser.rect.midtop, all_sprites)
             explosion_sound.play()
@@ -129,6 +131,11 @@ def display_score(score, display_surface):
     text_rect = text_surf.get_frect(midbottom = (WINDOW_WIDTH / 2, WINDOW_HEIGHT - 50))
     display_surface.blit(text_surf, text_rect)
     pygame.draw.rect(display_surface, (240,240,240), text_rect.inflate(20, 16).move(0, -8), 5, 5)
+
+def display_meteors(meteors_destroyed, display_surface):
+    text_surf = font.render(f'Meteors: {meteors_destroyed}', True, (240, 240, 240))
+    text_rect = text_surf.get_frect(midbottom = (WINDOW_WIDTH / 2 + 250, WINDOW_HEIGHT - 50))
+    display_surface.blit(text_surf, text_rect)
     
 
 #general setup
@@ -139,6 +146,7 @@ pygame.display.set_caption("Space Shooter")
 running = True
 clock = pygame.time.Clock()
 score = 0
+meteors_destroyed = 0
 
 #group stuff
 all_sprites = pygame.sprite.Group()
@@ -194,6 +202,7 @@ while running:
 
 
     display_score(score, display_surface)
+    display_meteors(meteors_destroyed, display_surface)
     pygame.display.update()
 
 
