@@ -18,7 +18,7 @@ class Game():
         self.collision_sprites = pygame.sprite.Group()
 
         # sprites
-        self.player = Player((400, 300), self.all_sprites)
+        self.player = Player((400, 300), self.all_sprites, self.collision_sprites)
         for i in range(6):
             CollisionSprite((randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)), (100, 100), (self.all_sprites, self.collision_sprites))
 
@@ -48,4 +48,4 @@ if __name__ == "__main__":
     game = Game()
     game.run()
 
-# left off at 4 07 min 38 seconds
+# left off at 4 14 min 22 seconds, but i went ahead and finished all directions of player collision
