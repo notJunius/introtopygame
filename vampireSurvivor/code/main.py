@@ -1,8 +1,11 @@
+from pygame.image import load
 from settings import *
 import pygame as pg
 from player import Player
 from sprites import *
 from random import randint
+from pytmx.util_pygame import load_pygame
+from groups import AllSprites
 
 class Game():
     def __init__(self):
@@ -14,13 +17,30 @@ class Game():
         self.running = True
 
         # groups
-        self.all_sprites = pg.sprite.Group()
+        self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
 
+        self.setup()
+
         # sprites
-        self.player = Player((400, 300), self.all_sprites, self.collision_sprites)
-        for i in range(6):
-            CollisionSprite((randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)), (100, 100), (self.all_sprites, self.collision_sprites))
+
+
+    def setup(self):
+        map = load_pygame(join('data', 'maps', 'world.tmx'))
+
+        for obj in map.get_layer_by_name('Collisions'):
+            CollisionSprite((obj.x, obj.y), pg.Surface((obj.width, obj.height)), (self.all_sprites, self.collision_sprites))
+
+        for x, y, image in map.get_layer_by_name('Ground').tiles():
+            Sprite((x * 64,y * 64), image, self.all_sprites)
+
+        for obj in map.get_layer_by_name('Objects'):
+            CollisionSprite((obj.x, obj.y), obj.image, (self.all_sprites, self.collision_sprites))
+
+        for marker in map.get_layer_by_name('Entities'):
+            if marker.name == "Player":
+                self.player = Player((marker.x, marker.y), self.all_sprites, self.collision_sprites)
+
 
     def run(self):
         while self.running:
@@ -37,10 +57,12 @@ class Game():
 
             #draw
             self.display_surface.fill('black')
-            self.all_sprites.draw(self.display_surface)
+            self.all_sprites.draw(self.player.rect.center)
             pg.display.update()
 
         pg.quit()
+
+
 
 
 
@@ -48,4 +70,4 @@ if __name__ == "__main__":
     game = Game()
     game.run()
 
-# left off at 4 14 min 22 seconds, but i went ahead and finished all directions of player collision
+# left off at 4 56 min 49 seconds
