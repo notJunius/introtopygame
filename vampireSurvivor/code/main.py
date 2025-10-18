@@ -70,4 +70,4 @@ if __name__ == "__main__":
     game = Game()
     game.run()
 
-# left off at 4 56 min 49 seconds
+# left off at 5 01 min 54 seconds, in groups i added a lambda for ysorting, it isn't complete yet.
